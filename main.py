@@ -202,6 +202,10 @@ def main():
                 claim_assigment=claim_task_assignment_daly(payload)
                 if claim_assigment.status_code == 200 :
                     output.success(f"{assigment['title']} - Success")
+                else:
+                    output.danger(f"{assigment['title']} - Failed")
+            else:
+                output.warning(f"{assigment['title']} - Success")
                 
         # ### TASK
         output.warning("##> LIST-TASK : ")
