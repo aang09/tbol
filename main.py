@@ -132,18 +132,14 @@ def staking_coin(payload):
     res= req.json()
     return res
 
-def staking_address(address):
+def staking_address():
     req=api.get2(
-        url   = f"https://bot-api.bool.network/bool-tg-interface/user/user-vote-devices?address={address}&pageNo=1&pageSize=100&yield=1",
+        url   = f"https://bot-api.bool.network/bool-tg-interface/user/vote:devices?pageNo=1&pageSize=1&yield=1",
         data  = '',
         token = ""
     )
-    res= req.json()
-    total=0
-    for d in res['data']['records'] :
-        print('++++++')
-        total +=int(d['currentStake'])
-    return total
+    data=req.json()['data']['records'][0]
+    return data['deviceID'],data['nextStake'],data["currentStake"]
 
 def list_task_2(payload):
     req=api.post(
@@ -154,10 +150,26 @@ def list_task_2(payload):
     res= req.json()
     return res
 #
+def staked_address(address,total_coin):
+    req=api.get(
+        url   = f"https://miniapp.bool.network/backend/bool-tg-interface/user/user-vote-devices?address={address}&pageNo=1&pageSize=100&yield=1",
+        data  = "",
+        token = ""
+    )
+    
+    res= req.json()
+    total_staked=0
+    len_total_coin= len(str(total_coin))
+ 
+    for d in res['data']['records']:
+        total_staked+=int(d['currentStake'][:len_total_coin])
+    sisa = total_staked-int(len_total_coin)
+    
+    return sisa
+#
 
 
 # ----------------- 
-
 
 def main():
     Q=get_querys()
@@ -200,19 +212,30 @@ def main():
                 output.success(f"{task['title']}   -   Success") 
             else:
                 output.danger(f"{task['title']}    -   Gagal") 
-            time.sleep(3)
+            time.sleep(0.5)
         
         ### STAKING-POIN
-        output.warning("### >  STAKING POIN :")
         user=get_user(payload=payload).json()['data']
-        reward=int(round(float(user['rewardValue'])))
+        total_coin=int(round(float(user['rewardValue'])))
         
-
+        s_address,vote,current_staked=staking_address()
+        payload['deviceId']=[s_address]
+ 
+        # get staked
+        sisa_coin=staked_address(user['evmAddress'],total_coin)
+       
+        output.warning("### >  STAKING POIN :")
+        if sisa_coin < 1:
+            return 
+        print(f"=============={vote}")
+        if 0 == int(vote):
+            payload['amount']=[sisa_coin]
+        else:
+            payload['amount']=[(int(current_staked)+int(sisa_coin))]
+        res_req_staked=staking_coin(payload)  
+        # print(res_req_staked)
+        output.success(f"Stakeing {payload['amount']}: {res_req_staked['message']}")
         
-        output.success(f"Stakeing : {reward}")
-        payload['deviceId']=['0x17d879e4886faa4fd556cdf6b0bc70c8eeadaba495dfd0eed59ddab8db335438']
-        stake=staking_coin(payload)
-        output.success(f"TOTAL STAKING : {reward}")
         
         
        
