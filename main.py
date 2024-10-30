@@ -182,14 +182,17 @@ def main():
         output.warning(f"User: {user['username']}")
         
         ###  STACKING Daly
-        output.warning("##> DAILY :")
+        output.warning("##> CHECKIN DAILY :")
         task_daily=list_stacking(payload).json()
         for daily in task_daily['data'] :
             if daily['done']=="false":
                 payload['assignmentId']=daily['assignmentId']
                 if claim_task_daly(payload).status_code == 200 :
                     output.success(f"{daily['title']} - Success")
-        
+                else:
+                    output.danger(f"{daily['title']} - Failed")
+            else:
+                output.warning(f"{daily['title']} - Success")
         ### task_assignment_daly
         output.warning("##> DAILY - ASSIGMENT :")
         task_assigments=task_assignment_daly(payload)
@@ -206,7 +209,7 @@ def main():
       
         for task in tasks.json()['data'] :
             if task['completeTime'] != None :
-                output.success(f"{task['title']} - Success") 
+                output.warning(f"{task['title']} - Success") 
             else:
                 payload['assignmentId']=task['assignmentId']
                 claim=claim_task(payload)
