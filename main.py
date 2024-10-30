@@ -201,21 +201,23 @@ def main():
                     output.success(f"{assigment['title']} - Success")
                 
         # ### TASK
-        output.warning("##> LIST-TASK  :")
+        output.warning("##> LIST-TASK : ")
         tasks=list_tasks(payload)
+      
         for task in tasks.json()['data'] :
             if task['completeTime'] != None :
-                output.success(f"{task['title']}   -   Success") 
-                continue 
-            payload['assignmentId']=task['assignmentId']
-            claim=claim_task(payload)
-            if claim['code']==200 :
-                output.success(f"{task['title']}   -   Success") 
+                output.success(f"{task['title']} - Success") 
             else:
-                output.danger(f"{task['title']}    -   Gagal") 
-            time.sleep(0.5)
+                payload['assignmentId']=task['assignmentId']
+                claim=claim_task(payload)
+                if claim['code']==200 :
+                    output.success(f"{task['title']} - Success") 
+                else:
+                    output.danger(f"{task['title']} - Gagal") 
+            time.sleep(2)
         
         ### STAKING-POIN
+        output.warning("###> STAKING : ")
         user=get_user(payload=payload).json()['data']
         total_coin=int(round(float(user['rewardValue'])))
         
@@ -225,7 +227,6 @@ def main():
         # get staked
         sisa_coin=staked_address(user['evmAddress'],total_coin)
        
-        output.warning("### >  STAKING POIN :")
         if sisa_coin < 1:
             return 
  
