@@ -160,7 +160,7 @@ def main():
         
         ### DATA USER
         user=get_user(payload=payload).json()['data']
-        print(user)
+
         output.warning(f"User: {user['username']}")
 
         
