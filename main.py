@@ -201,10 +201,11 @@ def main():
                     output.success(f"{assigment['title']} - Success")
                 
         # ### TASK
-        output.warning("##> LIST-TASK BELUM SELESAI :")
+        output.warning("##> LIST-TASK  :")
         tasks=list_tasks(payload)
         for task in tasks.json()['data'] :
             if task['completeTime'] != None :
+                output.success(f"{task['title']}   -   Success") 
                 continue 
             payload['assignmentId']=task['assignmentId']
             claim=claim_task(payload)
@@ -227,7 +228,7 @@ def main():
         output.warning("### >  STAKING POIN :")
         if sisa_coin < 1:
             return 
-        print(f"=============={vote}")
+ 
         if 0 == int(vote):
             payload['amount']=[sisa_coin]
         else:
