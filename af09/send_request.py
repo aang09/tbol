@@ -18,7 +18,7 @@ class Api :
             "Content-type"      : "application/json",
             "Connection"        : "keep-alive",
             "priority"          : "u=1, i",
-            "Accept-encoding"   : "gzip, deflate, br, zstd",
+            "Accept-encoding"   : "gzip",
             "sec-ch-ua"         : ua.random,          # Use a random fake user-agent
             "sec-ch-ua-mobile"  : "?1",
             "sec-ch-ua-platform": "android",        # Optional: Customize the platform as needed
@@ -40,7 +40,7 @@ class Api :
             "Content-type"      : "application/json",
             "Connection"        : "keep-alive",
             "priority"          : "u=1, i",
-            "Accept-encoding"   : "gzip, deflate, br, zstd",
+            "Accept-encoding"   : "gzip",
             "sec-ch-ua"         : ua.random,          # Use a random fake user-agent
             "sec-ch-ua-mobile"  : "?1",
             "sec-ch-ua-platform": "android",        # Optional: Customize the platform as needed
