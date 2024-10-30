@@ -120,8 +120,8 @@ def claim_task_assignment_daly(payload):
         data  = payload,
         token = ""
     )
-    res= req.json()
-    return res
+    # res= req.json()
+    return req
 
 def staking_coin(payload):
     req=api.post(
@@ -145,8 +145,15 @@ def staking_address(address):
         total +=int(d['currentStake'])
     return total
 
+def list_task_2(payload):
+    req=api.post(
+        url   = "https://bot-api.bool.network/bool-tg-interface/assignment/list",
+        data  = payload,
+        token = ""
+    )
+    res= req.json()
+    return res
 #
-
 
 
 # ----------------- 
@@ -160,9 +167,7 @@ def main():
         
         ### DATA USER
         user=get_user(payload=payload).json()['data']
-
         output.warning(f"User: {user['username']}")
-
         
         ###  STACKING Daly
         output.warning("##> DAILY :")
@@ -177,14 +182,12 @@ def main():
         output.warning("##> DAILY - ASSIGMENT :")
         task_assigments=task_assignment_daly(payload)
         for assigment in task_assigments['data'] :
-             
-            if assigment['done'] == "false":
+            if assigment['done'] == False:
                 payload['assignmentId']=assigment['assignmentId']
                 claim_assigment=claim_task_assignment_daly(payload)
                 if claim_assigment.status_code == 200 :
                     output.success(f"{assigment['title']} - Success")
                 
-
         # ### TASK
         output.warning("##> LIST-TASK BELUM SELESAI :")
         tasks=list_tasks(payload)
@@ -201,16 +204,10 @@ def main():
         
         ### STAKING-POIN
         output.warning("### >  STAKING POIN :")
-
         user=get_user(payload=payload).json()['data']
-        # total_staking = staking_address(user['evmAddress'])
-      
         reward=int(round(float(user['rewardValue'])))
-        # length_of_reward = len(str(reward))
-        # total_staking_string = int(str(total_staking)[:length_of_reward])
-        # int_staking=int(total_staking_string)
-        # sisa = reward - int_staking
-        # payload['amount']=[sisa]
+        
+
         
         output.success(f"Stakeing : {reward}")
         payload['deviceId']=['0x17d879e4886faa4fd556cdf6b0bc70c8eeadaba495dfd0eed59ddab8db335438']
